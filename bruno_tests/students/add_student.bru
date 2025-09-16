@@ -1,0 +1,49 @@
+meta {
+  name: Add Student
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}{{apiPath}}/add_student.php
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "name": "{{testStudentName}}",
+    "email": "{{testStudentEmail}}",
+    "phone": "{{testStudentPhone}}"
+  }
+}
+
+tests {
+  test("Status should be 200", function() {
+    expect(res.getStatus()).to.equal(200);
+  });
+
+  test("Response should be JSON", function() {
+    expect(res.getHeader('content-type')).to.contain('application/json');
+  });
+
+  test("Should create student successfully", function() {
+    const jsonData = res.getBody();
+    expect(jsonData).to.have.property('success');
+    expect(jsonData.success).to.be.true;
+    expect(jsonData).to.have.property('message');
+    expect(jsonData).to.have.property('data');
+    
+    const student = jsonData.data;
+    expect(student).to.have.property('id');
+    expect(student.name).to.equal(bru.getEnvVar('testStudentName'));
+    expect(student.email).to.equal(bru.getEnvVar('testStudentEmail'));
+  });
+
+  test("Should save student ID for future tests", function() {
+    const jsonData = res.getBody();
+    if (jsonData.success && jsonData.data) {
+      bru.setVar("createdStudentId", jsonData.data.id);
+    }
+  });
+}

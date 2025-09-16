@@ -1,0 +1,51 @@
+meta {
+  name: Monthly Report
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}{{apiPath}}/reports.php?month=2025-09
+  body: none
+  auth: none
+}
+
+tests {
+  test("Status should be 200", function() {
+    expect(res.getStatus()).to.equal(200);
+  });
+
+  test("Should return monthly report", function() {
+    const jsonData = res.getBody();
+    expect(jsonData).to.have.property('success');
+    expect(jsonData.success).to.be.true;
+    expect(jsonData).to.have.property('data');
+    
+    const data = jsonData.data;
+    expect(data).to.have.property('month');
+    expect(data).to.have.property('total_students');
+    expect(data).to.have.property('overall_stats');
+    expect(data).to.have.property('daily_stats');
+    expect(data).to.have.property('student_summary');
+  });
+
+  test("Overall stats should have correct structure", function() {
+    const jsonData = res.getBody();
+    const overallStats = jsonData.data.overall_stats;
+    
+    expect(overallStats).to.have.property('total_attendance_records');
+    expect(overallStats).to.have.property('present_count');
+    expect(overallStats).to.have.property('absent_count');
+    expect(overallStats).to.have.property('overall_rate');
+  });
+
+  test("Daily stats should be an array", function() {
+    const jsonData = res.getBody();
+    expect(jsonData.data.daily_stats).to.be.an('array');
+  });
+
+  test("Student summary should be an array", function() {
+    const jsonData = res.getBody();
+    expect(jsonData.data.student_summary).to.be.an('array');
+  });
+}

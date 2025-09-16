@@ -1,0 +1,38 @@
+meta {
+  name: Get Attendance by Date
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{baseUrl}}{{apiPath}}/get_attendance.php?action=by_date&date={{testDate}}
+  body: none
+  auth: none
+}
+
+tests {
+  test("Status should be 200", function() {
+    expect(res.getStatus()).to.equal(200);
+  });
+
+  test("Should return attendance data", function() {
+    const jsonData = res.getBody();
+    expect(jsonData).to.have.property('success');
+    expect(jsonData.success).to.be.true;
+    expect(jsonData).to.have.property('data');
+    
+    const data = jsonData.data;
+    expect(data).to.have.property('date');
+    expect(data).to.have.property('attendance');
+    expect(data.attendance).to.be.an('array');
+  });
+
+  test("Summary should have correct structure", function() {
+    const jsonData = res.getBody();
+    const data = jsonData.data;
+    
+    expect(data).to.have.property('date');
+    expect(data).to.have.property('attendance');
+    expect(data.attendance).to.be.an('array');
+  });
+}

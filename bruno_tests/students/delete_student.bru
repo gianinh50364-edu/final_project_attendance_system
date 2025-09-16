@@ -1,0 +1,31 @@
+meta {
+  name: Delete Student
+  type: http
+  seq: 5
+}
+
+delete {
+  url: {{baseUrl}}{{apiPath}}/delete_student.php
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "id": {{createdStudentId}}
+  }
+}
+
+tests {
+  test("Status should be 200", function() {
+    expect(res.getStatus()).to.equal(200);
+  });
+
+  test("Should delete student successfully", function() {
+    const jsonData = res.getBody();
+    expect(jsonData).to.have.property('success');
+    expect(jsonData.success).to.be.true;
+    expect(jsonData).to.have.property('message');
+    expect(jsonData.message).to.contain('deleted');
+  });
+}

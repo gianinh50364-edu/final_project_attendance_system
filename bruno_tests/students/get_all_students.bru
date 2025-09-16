@@ -1,0 +1,41 @@
+meta {
+  name: Get All Students
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}{{apiPath}}/get_students.php
+  body: none
+  auth: none
+}
+
+tests {
+  test("Status should be 200", function() {
+    expect(res.getStatus()).to.equal(200);
+  });
+
+  test("Response should be JSON", function() {
+    expect(res.getHeader('content-type')).to.contain('application/json');
+  });
+
+  test("Should return students array", function() {
+    const jsonData = res.getBody();
+    expect(jsonData).to.have.property('success');
+    expect(jsonData.success).to.be.true;
+    expect(jsonData).to.have.property('data');
+    expect(jsonData.data).to.have.property('students');
+    expect(jsonData.data.students).to.be.an('array');
+  });
+
+  test("Students should have required fields", function() {
+    const jsonData = res.getBody();
+    if (jsonData.data.students.length > 0) {
+      const student = jsonData.data.students[0];
+      expect(student).to.have.property('id');
+      expect(student).to.have.property('name');
+      expect(student).to.have.property('email');
+      expect(student).to.have.property('created_at');
+    }
+  });
+}

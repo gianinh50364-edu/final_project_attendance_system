@@ -1,0 +1,40 @@
+meta {
+  name: Get Student Statistics
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{baseUrl}}{{apiPath}}/get_student_stats.php?student_id={{testStudentId}}&from_date=2025-09-01&to_date=2025-09-30
+  body: none
+  auth: none
+}
+
+tests {
+  test("Status should be 200", function() {
+    expect(res.getStatus()).to.equal(200);
+  });
+
+  test("Should return student statistics", function() {
+    const jsonData = res.getBody();
+    expect(jsonData).to.have.property('success');
+    expect(jsonData.success).to.be.true;
+    expect(jsonData).to.have.property('data');
+    
+    const data = jsonData.data;
+    expect(data).to.have.property('total_days');
+    expect(data).to.have.property('present_days');
+    expect(data).to.have.property('absent_days');
+    expect(data).to.have.property('attendance_percentage');
+  });
+
+  test("Stats should have correct structure", function() {
+    const jsonData = res.getBody();
+    const data = jsonData.data;
+    
+    expect(data.total_days).to.exist;
+    expect(data.present_days).to.exist;
+    expect(data.absent_days).to.exist;
+    expect(data.attendance_percentage).to.exist;
+  });
+}

@@ -1,0 +1,43 @@
+{
+  "version": "1",
+  "name": "Attendance Management System API",
+  "type": "collection",
+  "ignore": [
+    "node_modules",
+    ".git"
+  ],
+  "preRequestScript": "",
+  "postRequestScript": "",
+  "environmentVariables": {},
+  "docs": {
+    "description": "Comprehensive API testing suite for the Attendance Management System",
+    "version": "1.0.0",
+    "author": "Development Team",
+    "license": "MIT"
+  },
+  "settings": {
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "timeout": 5000,
+    "followRedirects": true,
+    "maxRedirects": 5
+  },
+  "folders": [
+    {
+      "name": "students",
+      "description": "Student management endpoints - CRUD operations"
+    },
+    {
+      "name": "attendance", 
+      "description": "Attendance tracking and statistics endpoints"
+    },
+    {
+      "name": "reports",
+      "description": "Report generation and analytics endpoints"
+    }
+  ],
+  "environments": [
+    "development"
+  ]
+}
